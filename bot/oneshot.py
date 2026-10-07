@@ -2,24 +2,50 @@
 
 Env: WEBHOOK_URL (required), MESSAGE_ID (optional: the message to keep editing).
 Without MESSAGE_ID a new message is posted and its ID printed; save it as the MESSAGE_ID variable.
+
+Uses Discord's webhook HTTP API directly (plain JSON). discord.py's webhook client crashes when parsing
+messages that have reactions, and we don't need its models anyway.
 """
 from __future__ import annotations
 
 import asyncio
-import io
+import json
 import os
 import sys
 from datetime import datetime, timezone
 
 import aiohttp
-import discord
 
 from .message import board_embed, content_key, static_signature
 from .render import render_board
 from .schedule import build_board, load_json
 
 
-async def run() -> None:
+class DiscordError(Exception):
+    pass
+
+
+async def _call(session: aiohttp.ClientSession, method: str, url: str, payload: dict | None = None,
+                image: tuple[str, bytes] | None = None) -> dict:
+    kwargs = {}
+    if payload is not None and image:
+        name, png = image
+        payload = {**payload, "attachments": [{"id": 0, "filename": name}]}
+        form = aiohttp.FormData()
+        form.add_field("payload_json", json.dumps(payload), content_type="application/json")
+        form.add_field("files[0]", png, filename=name, content_type="image/png")
+        kwargs["data"] = form
+    elif payload is not None:
+        kwargs["json"] = payload
+    async with session.request(method, url, **kwargs) as resp:
+        if resp.status == 404:
+            return {}
+        if resp.status >= 400:
+            raise DiscordError(f"{method} failed: {resp.status} {await resp.text()}")
+        return await resp.json()
+
+
+async def run(webhook_url: str, msg_id: str | None) -> None:
     config = load_json(os.getenv("CONFIG_PATH", "config.json"))
     data = load_json(config.get("schedule_file", "data/schedule.json"))
     rows = build_board(config, data, datetime.now(timezone.utc))
@@ -27,42 +53,34 @@ async def run() -> None:
     # Optional table image. Its file name carries a hash of its content, so the next run can tell whether
     # it is still current without keeping any state of its own.
     image_name = f"schedule-{static_signature(rows)}.png" if config.get("image") else None
-    embed_dict = board_embed(rows, title, image_name)
-    embed = discord.Embed.from_dict(embed_dict)
+    embed = board_embed(rows, title, image_name)
 
-    def files() -> list[discord.File]:
-        if not image_name:
-            return []
-        return [discord.File(io.BytesIO(render_board(rows, title)), filename=image_name)]
+    def image() -> tuple[str, bytes] | None:
+        return (image_name, render_board(rows, title)) if image_name else None
 
     async with aiohttp.ClientSession() as session:
-        webhook = discord.Webhook.from_url(os.environ["WEBHOOK_URL"], session=session)
-        raw_id = (os.getenv("MESSAGE_ID") or "").strip()
-        if raw_id and not raw_id.isdigit():
-            sys.exit(f"MESSAGE_ID must be just the number, got {raw_id!r}")
-        msg_id = int(raw_id or 0)
-
         if msg_id:
-            try:
-                msg = await webhook.fetch_message(msg_id)
-            except discord.NotFound:
+            msg_url = f"{webhook_url}/messages/{msg_id}"
+            msg = await _call(session, "GET", msg_url)
+            if not msg:
                 print(f"Message {msg_id} not found, posting a new one")
             else:
-                current = msg.embeds[0].to_dict() if msg.embeds else {}
-                have = [a.filename for a in msg.attachments]
+                current = (msg.get("embeds") or [{}])[0]
+                have = [a["filename"] for a in msg.get("attachments", [])]
                 same_image = have == ([image_name] if image_name else [])
-                if same_image and content_key(current) == content_key(embed_dict):
+                if same_image and content_key(current) == content_key(embed):
                     print("Board unchanged, nothing to do")
                     return
                 if same_image:
-                    await webhook.edit_message(msg_id, embed=embed)
+                    await _call(session, "PATCH", msg_url, {"embeds": [embed]})
                 else:
-                    await webhook.edit_message(msg_id, embed=embed, attachments=files())
+                    # Replacing the attachment list also drops an old image when the image is turned off.
+                    await _call(session, "PATCH", msg_url, {"embeds": [embed], "attachments": []}, image())
                 print(f"Updated message {msg_id}")
                 return
 
-        msg = await webhook.send(embed=embed, files=files(), wait=True)
-        note = f"Posted new message {msg.id}. Save it as the MESSAGE_ID repository variable."
+        msg = await _call(session, "POST", f"{webhook_url}?wait=true", {"embeds": [embed]}, image())
+        note = f"Posted new message {msg['id']}. Save it as the MESSAGE_ID repository variable."
         print(f"::notice::{note}" if os.getenv("GITHUB_ACTIONS") else note)
         if summary := os.getenv("GITHUB_STEP_SUMMARY"):
             with open(summary, "a") as f:
@@ -70,16 +88,18 @@ async def run() -> None:
 
 
 def main() -> None:
-    url = (os.getenv("WEBHOOK_URL") or "").strip()
+    url = (os.getenv("WEBHOOK_URL") or "").strip().rstrip("/")
     if not url:
         sys.exit("WEBHOOK_URL is not set (add it under Settings > Secrets and variables > Actions > Secrets)")
     if not url.startswith("https://") or "/api/webhooks/" not in url:
         sys.exit("WEBHOOK_URL doesn't look like a Discord webhook URL (https://discord.com/api/webhooks/...)")
-    os.environ["WEBHOOK_URL"] = url
+    msg_id = (os.getenv("MESSAGE_ID") or "").strip()
+    if msg_id and not msg_id.isdigit():
+        sys.exit(f"MESSAGE_ID must be just the number, got {msg_id!r}")
     try:
-        asyncio.run(run())
-    except discord.HTTPException as e:
-        sys.exit(f"Discord rejected the request: {e.status} {e.text}")
+        asyncio.run(run(url, msg_id or None))
+    except DiscordError as e:
+        sys.exit(f"Discord rejected the request: {e}")
 
 
 if __name__ == "__main__":
