@@ -41,6 +41,9 @@ class SeriesSchedule:
                 return w
         return None
 
+    def week_at(self, t: datetime) -> dict | None:
+        return next((w for w, start, end in self.windows() if start <= t < end), None)
+
     def next_session(self, now: datetime) -> datetime | None:
         if not self.recurrence:
             return None
@@ -121,7 +124,10 @@ def build_board(config: dict, data: dict, now: datetime) -> list[Row]:
                 continue
             raw = find_series(data, r[kind])
             sched = SeriesSchedule(raw, overrides.get(raw["name"].casefold()))
-            sides[kind] = Side(sched, sched.current_week(now), sched.next_session(now))
+            nxt = sched.next_session(now)
+            # Show the week of the next race (matters for weekend-only events whose race already ran).
+            week = (sched.week_at(nxt) if nxt else None) or sched.current_week(now)
+            sides[kind] = Side(sched, week, nxt)
         rows.append(Row(r.get("label") or (r.get("open") or r.get("fixed")), sides["open"], sides["fixed"]))
     return rows
 

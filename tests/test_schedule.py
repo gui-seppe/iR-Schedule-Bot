@@ -65,6 +65,7 @@ def test_every_other_week_skips_off_week():
     now = dt(2026, 10, 11, 1, 0)  # after the Sunday 00:00 race of week 2
     imsa = build_board(CONFIG, DATA, now)[1]
     assert imsa.open.next == dt(2026, 10, 24, 4, 0)
+    assert imsa.week["track"] == "Charlotte Roval"  # track of the next race, not the finished one
 
 
 def test_rollover_changes_track():
