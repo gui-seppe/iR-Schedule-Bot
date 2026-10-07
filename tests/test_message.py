@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from bot.message import MAX_ROWS, SPACER, board_embeds, content_key, section_fields
+from bot.message import EMPTY, MAX_ROWS, board_embeds, content_key, section_fields
 from bot.schedule import build_sections
 from tests.test_schedule import CONFIG, DATA
 
@@ -28,7 +28,7 @@ def test_flat_rows_config_still_works():
     assert len(sec.rows) == 3
 
 
-def test_row_fields_and_spacers():
+def test_row_fields_and_placeholders():
     sprint, endurance = build_sections(SECTIONED, DATA, NOW)
     name, open_, fixed = section_fields(sprint.rows)
     assert name["name"] == "SLM" and "Thompson" in name["value"]
@@ -36,9 +36,10 @@ def test_row_fields_and_spacers():
     assert f"<t:{ts}:R>" in open_["value"] and "☀️ 20°C" in open_["value"]
     assert fixed["name"] == "🔵 Fixed"
     fields = section_fields(endurance.rows)
-    # IMSA row has no fixed column; a spacer separates rows
-    assert [f["name"] for f in fields][:4] == ["IMSA MPC", "🟢 Open", "​", "SLM Tour"]
-    assert fields[2] is SPACER
+    # IMSA row has no fixed series: placeholder keeps the 3-column grid
+    assert [f["name"] for f in fields] == ["IMSA MPC", "🟢 Open", "\u200b", "SLM Tour", "\u200b", "🔵 Fixed"]
+    assert fields[2] is EMPTY and fields[4] is EMPTY
+    assert fields[0]["value"].endswith("\n\u200b") and not fields[3]["value"].endswith("\u200b")
 
 
 def test_content_key_ignores_timestamp():

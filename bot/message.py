@@ -11,9 +11,9 @@ from datetime import datetime, timezone
 
 from .schedule import Row, Section, Side
 
-MAX_ROWS = 6  # per section: 3 columns + 1 spacer per row, Discord allows 25 fields per embed
+MAX_ROWS = 8  # per section: 3 fields per row, Discord allows 25 fields per embed
 DEFAULT_COLOR = 0xE03C31
-SPACER = {"name": "​", "value": "​", "inline": False}
+EMPTY = {"name": "\u200b", "value": "\u200b", "inline": True}
 SIDE_TITLES = {"open": "🟢 Open", "fixed": "🔵 Fixed"}
 
 
@@ -46,15 +46,18 @@ def _series_cell(row: Row) -> str:
 
 
 def section_fields(rows: list[Row]) -> list[dict]:
+    """Three inline fields per row (series | open | fixed), so rows line up as a grid."""
     fields = []
-    for i, row in enumerate(rows[:MAX_ROWS]):
-        if i:
-            fields.append(SPACER)  # breathing room, and forces the next row onto a new line
-        fields.append({"name": row.label[:256], "value": _series_cell(row)[:1024], "inline": True})
+    shown = rows[:MAX_ROWS]
+    for i, row in enumerate(shown):
+        gap = "\n\u200b" if i < len(shown) - 1 else ""  # one blank line between series
+        fields.append({"name": row.label[:256], "value": _series_cell(row)[:1000] + gap, "inline": True})
         for kind in ("open", "fixed"):
             side = getattr(row, kind)
             if side:
                 fields.append({"name": SIDE_TITLES[kind], "value": _when(side), "inline": True})
+            else:
+                fields.append(EMPTY)
     return fields
 
 
@@ -102,6 +105,6 @@ def describe(sections: list[Section]) -> str:
     for sec in sections:
         lines.append(f"== {sec.title} ==")
         for f in section_fields(sec.rows):
-            if f is not SPACER:
+            if f is not EMPTY:
                 lines.append(f"[{f['name']}] " + f["value"].replace("\n", " / "))
     return "\n".join(lines)

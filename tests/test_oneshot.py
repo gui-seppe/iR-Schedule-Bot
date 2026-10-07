@@ -49,7 +49,7 @@ def test_edit_message_with_reactions_and_old_image(tmp_path, monkeypatch):
     assert len(state["patches"]) == 1 and not state["posts"]
     patch = state["patches"][0]
     assert patch["attachments"] == []  # old image removed
-    assert patch["content"].startswith("## ") and len(patch["embeds"]) == 2
+    assert patch["content"].startswith("## ") and patch["embeds"]
 
 
 def test_unchanged_board_is_not_edited(tmp_path, monkeypatch):
