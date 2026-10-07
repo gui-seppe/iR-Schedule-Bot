@@ -5,7 +5,6 @@ Run: python -m bot.main   (needs DISCORD_TOKEN and CHANNEL_ID in .env)
 from __future__ import annotations
 
 import asyncio
-import hashlib
 import io
 import json
 import logging
@@ -16,7 +15,7 @@ from pathlib import Path
 import discord
 from dotenv import load_dotenv
 
-from .message import describe
+from .message import describe, make_embed, static_signature
 from .render import render_board
 from .schedule import build_board, load_json, next_change
 
@@ -69,7 +68,7 @@ class ScheduleBot(discord.Client):
         description = describe(rows)
         png = render_board(rows, config.get("title", "Tracked series"))
         # Countdowns tick client-side; only edit when the content actually changes.
-        signature = hashlib.sha256(description.encode() + _static_part(rows)).hexdigest()
+        signature = description + static_signature(rows)
         if signature != self.last_signature:
             await self.publish(description, png, config)
             self.last_signature = signature
@@ -82,10 +81,7 @@ class ScheduleBot(discord.Client):
 
     async def publish(self, description: str, png: bytes, config: dict) -> None:
         channel = await self.fetch_channel(self.channel_id)
-        embed = discord.Embed(title=config.get("title", "Tracked series"), description=description,
-                              color=0xE03C31, timestamp=datetime.now(timezone.utc))
-        embed.set_image(url="attachment://schedule.png")
-        embed.set_footer(text="Times are in your local timezone · last change")
+        embed = make_embed(config.get("title", "Tracked series"), description, "schedule.png")
         file = discord.File(io.BytesIO(png), filename="schedule.png")
 
         msg_id = self.state.get("message_id") if self.state.get("channel_id") == self.channel_id else None
@@ -101,11 +97,6 @@ class ScheduleBot(discord.Client):
         self.state = {"channel_id": self.channel_id, "message_id": msg.id}
         _save_state(self.state)
         log.info("posted message %s", msg.id)
-
-
-def _static_part(rows) -> bytes:
-    # The image only shows week/track/weather, so hash those instead of the PNG (which has a timestamp).
-    return json.dumps([[r.label, r.week, [s.week for s in r.sides]] for r in rows], default=str).encode()
 
 
 def main() -> None:

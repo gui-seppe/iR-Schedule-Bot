@@ -26,7 +26,26 @@ python -m venv .venv
 4. `cp config.example.json config.json` and list the series you want. `open` / `fixed` take the full
    series name from the PDF (or any unique part of it). Either can be omitted.
 
-## Run
+## Hosting on GitHub Actions (no server)
+
+`.github/workflows/board.yml` runs `python -m bot.oneshot` every 5 minutes: it posts through a channel
+webhook, edits the message only when something changed, and exits.
+
+1. Discord: channel settings → Integrations → Webhooks → New Webhook → Copy Webhook URL.
+2. Push this repo to GitHub as a **public** repository (Actions minutes are unlimited for public repos; a
+   private repo would run out of its 2,000 free minutes). The webhook URL stays secret (next step).
+3. Repo → Settings → Secrets and variables → Actions:
+   - *Secrets* tab → New secret `WEBHOOK_URL` = the webhook URL.
+4. Actions tab → *Update board* → Run workflow. It posts the message and prints its ID.
+5. Same settings page → *Variables* tab → New variable `MESSAGE_ID` = that ID. From now on runs edit that message.
+
+Notes: scheduled runs can be delayed by a few minutes at busy times, so the board may move on to the next
+race a few minutes after the start. GitHub pauses scheduled workflows in repos with no commits for 60 days:
+committing the new season's `schedule.json` keeps it alive (or re-enable it from the Actions tab).
+
+New season: `python scripts/parse_schedule.py new.pdf`, update `config.json` names, commit and push.
+
+## Run locally
 
 ```bash
 python -m bot.preview                      # renders preview.png + prints the embed text, no Discord needed

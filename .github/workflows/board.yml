@@ -1,0 +1,26 @@
+name: Update board
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"  # GitHub may delay scheduled runs by a few minutes
+  workflow_dispatch:
+
+concurrency:
+  group: board
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install "discord.py>=2.4" "Pillow>=10.1"
+      - run: python -m bot.oneshot
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE_ID: ${{ vars.MESSAGE_ID }}

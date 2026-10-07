@@ -24,3 +24,24 @@ def describe(rows: list[Row]) -> str:
             parts.append(f"Fixed {_when(row.fixed)}")
         lines.append(" " + "  |  ".join(parts))
     return "\n".join(lines)[:4096]
+
+
+def static_signature(rows: list[Row]) -> str:
+    """Short hash of what the image shows (week/track/weather). Changes when the image needs re-uploading."""
+    import hashlib
+    import json
+
+    blob = json.dumps([[r.label, r.week, [s.week for s in r.sides]] for r in rows], default=str)
+    return hashlib.sha256(blob.encode()).hexdigest()[:12]
+
+
+def make_embed(title: str, description: str, image_name: str):
+    from datetime import datetime, timezone
+
+    import discord
+
+    embed = discord.Embed(title=title, description=description, color=0xE03C31,
+                          timestamp=datetime.now(timezone.utc))
+    embed.set_image(url=f"attachment://{image_name}")
+    embed.set_footer(text="Times are in your local timezone · last change")
+    return embed
