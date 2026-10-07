@@ -1,0 +1,142 @@
+Current iRacing Race Schedule
+OVAL . . . . . . . . . . . . . . . . . . . . . . . .
+Mini Stock Rookie Series by Thrustmaster - 2026 Season 4 . . . . . . . . . . . .
+ARCA Menards Series - 2026 Season 4 - Fixed . . . . . . . . . . . . . . . . . . .
+1
+OVAL
+R Class Series (OVAL)
+Mini Stock Rookie Series by Thrustmaster - 2026 Season 4
+Mini Stock
+Rookie (1.0) --> Pro/WC (4.0)
+Races every 30 minutes at :15 and :45
+Min entries for official: 6 | Split at: 14 | Drops: 4
+No incident DT penalties. DQ at 17 incidents.
+Week 1 (2026-09-15) Charlotte Motor Speedway - Oval
+(2026-09-19 13:40 1x)
+84°F/29°C, Rain chance None, Rolling
+start, Cautions disabled, Qual scrutiny
+- Permissive.
+15 laps
+Week 2 (2026-09-22) Langley Speedway
+(2026-09-26 13:05 1x)
+80°F/27°C, Rain chance None, Rolling
+start, Cautions disabled, Qual scrutiny
+- Permissive.
+35 laps
+6
+D Class Series (OVAL)
+9
+ARCA Menards Series - 2026 Season 4 - Fixed
+ARCA Chevrolet SS, ARCA Ford Mustang, ARCA Toyota Camry
+Rookie (4.0) --> Pro/WC (4.0)
+Races hourly at :45 past
+Min entries for official: 8 | Split at: 24 | Drops: 4
+No incident DT penalties. DQ at 17 incidents.
+Week 1 (2026-09-15) Kansas Speedway - Oval
+(2026-09-19 18:00 1x)
+79°F/26°C, Rain chance None, Rolling
+start, Cautions disabled, Qual scrutiny
+- Lenient.
+ACSS25: 1 tire sets
+ARCAFM: 1 tire sets
+ARCATC: 1 tire sets
+45 laps
+Week 2 (2026-09-22) World Wide Technology Raceway (Gateway) -
+Oval
+(2026-10-03 13:10 1x)
+69°F/20°C, Rain chance None, Rolling
+start, Cautions disabled, Qual scrutiny
+- Lenient.
+40 laps
+Draft Master Challenge by Simagic - 2026 Season 4
+See race week for cars in use that week.
+Rookie (4.0) --> Pro/WC (4.0)
+Races every hour on the hour
+Min entries for official: 6 | Split at: 26 | Drops: 4
+Penalty every 17 incidents. DQ at 25 incidents.
+Week 1 (2026-09-15) Talladega Superspeedway
+Gen 4 Grand National
+(2026-09-19 12:55 1x)
+84°F/29°C, Rain chance None, Rolling
+start, Cautions disabled, Qual scrutiny
+- Strict.
+16 laps
+Week 2 (2026-09-22) Talladega Superspeedway
+NASCAR Cup Series Next Gen Chevrolet
+Camaro ZL1, NASCAR Cup Series Next Gen
+Ford Mustang
+(2026-09-26 13:00 1x)
+78°F/26°C, Rain chance None, Rolling
+start, Cautions disabled, Qual scrutiny
+- Strict.
+16 laps
+12
+Production Endurance Challenge - 2026 Season 4
+Global Mazda MX-5 Cup, BMW M2 Racing (G87), Renault Clio, Toyota
+GR86
+Rookie (4.0) --> Pro/WC (4.0), Team racing
+Races Friday at 19 GMT, Saturday at 7 GMT, Sunday at 18 GMT
+Min entries for official: 6 | Split at: 60 | Drops: 4
+Penalty at 25 incidents, and every 10 after. No incident DQ.
+Week 1 (2026-09-18) Hockenheimring Baden-Württemberg - Outer
+(2026-09-19 09:15 1x)
+67°F/20°C, Rain chance 29%, Grid by
+class, Rolling start, Local enforced
+cautions, Min 1 driver, Max 16 drivers,
+Drive Fair Share - Declare drivers,
+Qual scrutiny - Permissive.
+MX16: fuel: 75%
+120
+mins
+Week 6 (2026-10-23) Nürburgring Grand-Prix-Strecke - Kurzanbindung
+w/out Arena
+(2026-10-24 14:05 1x)
+65°F/19°C, Rain chance 34%, Grid by
+class, Rolling start, Local enforced
+cautions.
+120
+mins
+Big Block Modified Series - 2026 Season 4
+Dirt Big Block Modified
+Class D (4.0) --> Pro/WC (4.0), Heat racing
+Races hourly at :30
+Min entries for official: 6 | Split at: 20 | Drops: 4
+No incident DT penalties. DQ at 12 incidents.
+Week 1 (2026-09-15) Knoxville Raceway
+(2026-09-19 19:15 1x)
+69°F/21°C, Rain chance None, Rolling
+start, Full course cautions, Cautions
+laps do not count, Double-file Back.
+BBM: 1 tire sets
+H:8L
+C:10L
+F:50L
+INDYCAR Series - Oval - Fixed - 2026 Season 4
+Dallara IR18
+Class C (4.0) --> Pro/WC (4.0)
+Races every hour at :15 past
+Min entries for official: 8 | Split at: 26 | Drops: 4
+Penalty every 17 incidents. DQ at 25 incidents.
+Week 1 (2026-09-15) Auto Club Speedway - Oval
+(2026-05-11 12:00 1x)
+Constant weather, Dynamic sky,
+Rolling start, Full course cautions,
+Single-file Maintain, Qual scrutiny -
+Moderate.
+IR18: 3 tire sets
+60 laps
+Super Late Model Tour - 2026 Season Fixed
+Super Late Model
+Class D (4.0) --> Pro/WC (4.0)
+4 Timeslots Per Week
+Min entries for official: 6 | Split at: 30 | Drops: 6
+Penalty every 17 incidents. DQ at 25 incidents.
+Week 1 (2026-02-10) New Smyrna Speedway
+(2026-02-10 15:00 1x)
+71°F/22°C, Rain chance None, Rolling
+start, Start zone, Full course cautions,
+Lucky dog, 3-G/W/C, Double-file Back,
+Qual scrutiny - Moderate.
+SLM: 2 tire sets
+200 laps
+47
