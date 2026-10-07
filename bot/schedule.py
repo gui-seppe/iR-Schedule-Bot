@@ -154,4 +154,4 @@ def weather_text(week: dict | None) -> str:
     if week.get("temp_c") is None:
         return "Constant"
     rain = week.get("rain") or "None"
-    return f"{week['temp_c']}°C  ·  rain {rain.lower()}"
+    return f"{week['temp_c']}°C, " + ("dry" if rain == "None" else f"rain {rain}")

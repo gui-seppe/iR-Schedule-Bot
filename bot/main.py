@@ -15,7 +15,7 @@ from pathlib import Path
 import discord
 from dotenv import load_dotenv
 
-from .message import describe, make_embed, static_signature
+from .message import board_embed, content_key
 from .render import render_board
 from .schedule import build_board, load_json, next_change
 
@@ -65,12 +65,14 @@ class ScheduleBot(discord.Client):
         now = datetime.now(timezone.utc)
         rows = build_board(config, data, now)
 
-        description = describe(rows)
-        png = render_board(rows, config.get("title", "Tracked series"))
+        title = config.get("title", "Tracked series")
+        use_image = bool(config.get("image"))
+        embed_dict = board_embed(rows, title, "schedule.png" if use_image else None)
         # Countdowns tick client-side; only edit when the content actually changes.
-        signature = description + static_signature(rows)
+        signature = content_key(embed_dict)
         if signature != self.last_signature:
-            await self.publish(description, png, config)
+            png = render_board(rows, title) if use_image else None
+            await self.publish(discord.Embed.from_dict(embed_dict), png)
             self.last_signature = signature
 
         wake = next_change(rows, now)
@@ -79,21 +81,20 @@ class ScheduleBot(discord.Client):
         log.info("next refresh in %.0fs", delay)
         return delay
 
-    async def publish(self, description: str, png: bytes, config: dict) -> None:
+    async def publish(self, embed: discord.Embed, png: bytes | None) -> None:
         channel = await self.fetch_channel(self.channel_id)
-        embed = make_embed(config.get("title", "Tracked series"), description, "schedule.png")
-        file = discord.File(io.BytesIO(png), filename="schedule.png")
+        files = [discord.File(io.BytesIO(png), filename="schedule.png")] if png else []
 
         msg_id = self.state.get("message_id") if self.state.get("channel_id") == self.channel_id else None
         if msg_id:
             try:
                 msg = await channel.fetch_message(msg_id)
-                await msg.edit(embed=embed, attachments=[file])
+                await msg.edit(embed=embed, attachments=files)
                 log.info("edited message %s", msg_id)
                 return
             except discord.NotFound:
                 log.warning("message %s gone, posting a new one", msg_id)
-        msg = await channel.send(embed=embed, file=file)
+        msg = await channel.send(embed=embed, files=files)
         self.state = {"channel_id": self.channel_id, "message_id": msg.id}
         _save_state(self.state)
         log.info("posted message %s", msg.id)

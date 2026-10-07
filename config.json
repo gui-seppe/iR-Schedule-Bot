@@ -21,6 +21,14 @@
       "fixed": "GT3 Challenge Fixed by Fanatec - 2026 Season 4"
     }
   ],
-  "overrides": {},
+  "overrides": {
+    "IMSA iRacing Series - Fixed by GO Fast - 2026 Season 4": {
+      "kind": "interval",
+      "period": 120,
+      "offsets": [
+        105
+      ]
+    }
+  },
   "special_events": []
 }
