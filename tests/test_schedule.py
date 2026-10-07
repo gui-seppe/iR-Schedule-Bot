@@ -79,6 +79,21 @@ def test_next_change_is_earliest_start():
     assert next_change(build_board(CONFIG, DATA, now), now) == dt(2026, 10, 7, 22, 15)
 
 
+def test_special_event_from_config():
+    cfg = {
+        "rows": [{"label": "10h Road Atlanta", "open": "10 Hours of Road Atlanta"}],
+        "special_events": [{
+            "name": "10 Hours of Road Atlanta",
+            "recurrence": {"kind": "weekly", "slots": [["Fri", "21:00"], ["Sat", "09:00"]]},
+            "weeks": [{"week": 1, "start": "2026-10-30", "track": "Road Atlanta", "weather": "Dynamic"}],
+        }],
+    }
+    row = build_board(cfg, DATA, dt(2026, 10, 7))[0]
+    assert row.open.next == dt(2026, 10, 30, 21, 0)
+    assert row.week["track"] == "Road Atlanta"
+    assert build_board(cfg, DATA, dt(2026, 11, 1))[0].open.next is None  # event over
+
+
 def test_find_series_ambiguous():
     with pytest.raises(ConfigError, match="ambiguous"):
         find_series(DATA, "Super Late Model Series")

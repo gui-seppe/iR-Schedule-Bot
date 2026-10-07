@@ -25,12 +25,92 @@
     {
       "label": "GT Endurance",
       "open": "GT Endurance Series by Simucube - 2026 Season 4"
+    },
+    {
+      "label": "10h Road Atlanta",
+      "open": "10 Hours of Road Atlanta"
     }
   ],
   "overrides": {
     "Super Late Model Tour - 2026 Season Fixed": {
       "kind": "weekly",
-      "slots": [["Sat", "18:00"], ["Sun", "01:00"]]
+      "slots": [
+        [
+          "Sat",
+          "18:00"
+        ],
+        [
+          "Sun",
+          "01:00"
+        ]
+      ]
     }
-  }
+  },
+  "special_events": [
+    {
+      "name": "10 Hours of Road Atlanta",
+      "recurrence": {
+        "kind": "weekly",
+        "slots": [
+          [
+            "Fri",
+            "02:00"
+          ],
+          [
+            "Fri",
+            "09:00"
+          ],
+          [
+            "Fri",
+            "15:00"
+          ],
+          [
+            "Fri",
+            "21:00"
+          ],
+          [
+            "Sat",
+            "02:00"
+          ],
+          [
+            "Sat",
+            "09:00"
+          ],
+          [
+            "Sat",
+            "15:00"
+          ],
+          [
+            "Sat",
+            "21:00"
+          ],
+          [
+            "Sun",
+            "02:00"
+          ],
+          [
+            "Sun",
+            "09:00"
+          ],
+          [
+            "Sun",
+            "15:00"
+          ],
+          [
+            "Sun",
+            "21:00"
+          ]
+        ]
+      },
+      "weeks": [
+        {
+          "week": 1,
+          "start": "2026-10-30",
+          "track": "Road Atlanta",
+          "weather": "Hypercar \u00b7 LMP2 \u00b7 LMGT3",
+          "length": "600 mins"
+        }
+      ]
+    }
+  ]
 }

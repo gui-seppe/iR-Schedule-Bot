@@ -115,6 +115,8 @@ def find_series(data: dict, query: str) -> dict:
 
 def build_board(config: dict, data: dict, now: datetime) -> list[Row]:
     overrides = {k.casefold(): v for k, v in config.get("overrides", {}).items()}
+    # Special events aren't in the season PDF: they're declared in config in the same shape.
+    data = {"series": data["series"] + config.get("special_events", [])}
     rows = []
     for r in config["rows"]:
         sides = {}
@@ -147,6 +149,8 @@ def next_change(rows: list[Row], now: datetime) -> datetime | None:
 def weather_text(week: dict | None) -> str:
     if not week:
         return "—"
+    if week.get("weather"):
+        return week["weather"]
     if week.get("temp_c") is None:
         return "Constant"
     rain = week.get("rain") or "None"
