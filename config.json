@@ -28,6 +28,13 @@
       "offsets": [
         105
       ]
+    },
+    "GT3 Challenge Fixed by Fanatec - 2026 Season 4": {
+      "kind": "interval",
+      "period": 120,
+      "offsets": [
+        75
+      ]
     }
   },
   "special_events": []
