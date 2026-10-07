@@ -73,11 +73,13 @@ async def run(webhook_url: str, msg_id: str | None) -> None:
                     print("Board unchanged, nothing to do")
                     return
                 if same_image:
-                    await _call(session, "PATCH", msg_url, payload)
+                    result = await _call(session, "PATCH", msg_url, payload)
                 else:
                     # Replacing the attachment list also drops an old image when the image is turned off.
-                    await _call(session, "PATCH", msg_url, {**payload, "attachments": []}, image())
-                print(f"Updated message {msg_id}")
+                    print(f"Replacing attachments {have} -> {[image_name] if image_name else []}")
+                    result = await _call(session, "PATCH", msg_url, {**payload, "attachments": []}, image())
+                left = [a["filename"] for a in result.get("attachments", [])]
+                print(f"Updated message {msg_id}; attachments now: {left or 'none'}")
                 return
 
         msg = await _call(session, "POST", f"{webhook_url}?wait=true", payload, image())
