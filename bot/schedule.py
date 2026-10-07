@@ -50,7 +50,9 @@ class SeriesSchedule:
         for _, start, end in self.windows():
             if end <= now:
                 continue
-            if self.recurrence.first_week_only:
+            # Day/time-slot series (endurance events, NEC, DTM...) race only on the week listed in the PDF;
+            # gaps until the next listed week are off weeks.
+            if self.recurrence.kind == "weekly" or self.recurrence.first_week_only:
                 end = min(end, start + WEEK)
             for t in self.recurrence.occurrences(max(start, now), end):
                 if t > now:

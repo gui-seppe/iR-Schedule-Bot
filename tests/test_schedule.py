@@ -94,6 +94,19 @@ def test_special_event_from_config():
     assert build_board(cfg, DATA, dt(2026, 11, 1))[0].open.next is None  # event over
 
 
+def test_weekly_series_skip_off_weeks():
+    data = {"series": [{
+        "name": "NEC",
+        "recurrence": {"kind": "weekly", "slots": [["Sat", "07:00"], ["Sun", "13:00"]]},
+        "weeks": [week(9, "2026-10-10", "Nordschleife"), week(10, "2026-11-07", "Nordschleife")],
+    }]}
+    cfg = {"rows": [{"label": "NEC", "open": "NEC"}]}
+    # After the 10-11 Oct event the next race is 7 Nov, not the weekends in between
+    assert build_board(cfg, data, dt(2026, 10, 11, 14))[0].open.next == dt(2026, 11, 7, 7, 0)
+    # After the final event the season is over
+    assert build_board(cfg, data, dt(2026, 11, 8, 14))[0].open.next is None
+
+
 def test_find_series_ambiguous():
     with pytest.raises(ConfigError, match="ambiguous"):
         find_series(DATA, "Super Late Model Series")
