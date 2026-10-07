@@ -37,7 +37,10 @@ async def run() -> None:
 
     async with aiohttp.ClientSession() as session:
         webhook = discord.Webhook.from_url(os.environ["WEBHOOK_URL"], session=session)
-        msg_id = int(os.getenv("MESSAGE_ID") or 0)
+        raw_id = (os.getenv("MESSAGE_ID") or "").strip()
+        if raw_id and not raw_id.isdigit():
+            sys.exit(f"MESSAGE_ID must be just the number, got {raw_id!r}")
+        msg_id = int(raw_id or 0)
 
         if msg_id:
             try:
@@ -67,9 +70,16 @@ async def run() -> None:
 
 
 def main() -> None:
-    if not os.getenv("WEBHOOK_URL"):
-        sys.exit("WEBHOOK_URL is not set")
-    asyncio.run(run())
+    url = (os.getenv("WEBHOOK_URL") or "").strip()
+    if not url:
+        sys.exit("WEBHOOK_URL is not set (add it under Settings > Secrets and variables > Actions > Secrets)")
+    if not url.startswith("https://") or "/api/webhooks/" not in url:
+        sys.exit("WEBHOOK_URL doesn't look like a Discord webhook URL (https://discord.com/api/webhooks/...)")
+    os.environ["WEBHOOK_URL"] = url
+    try:
+        asyncio.run(run())
+    except discord.HTTPException as e:
+        sys.exit(f"Discord rejected the request: {e.status} {e.text}")
 
 
 if __name__ == "__main__":
