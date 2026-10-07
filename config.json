@@ -1,24 +1,36 @@
 {
-  "title": "Tracked Series",
+  "title": "🏎️ iRacing — Tracked Series",
   "schedule_file": "data/schedule.json",
-  "rows": [
+  "sections": [
     {
-      "label": "IMSA",
-      "open": "IMSA iRacing Series by GO Fast - 2026 Season 4",
-      "fixed": "IMSA iRacing Series - Fixed by GO Fast - 2026 Season 4"
+      "title": "⚡ Sprint",
+      "color": "#E03C31",
+      "rows": [
+        {
+          "label": "IMSA",
+          "open": "IMSA iRacing Series by GO Fast - 2026 Season 4",
+          "fixed": "IMSA iRacing Series - Fixed by GO Fast - 2026 Season 4"
+        },
+        {
+          "label": "GT Sprint",
+          "open": "GT Sprint Series by Simucube - 2026 Season 4",
+          "fixed": "GT3 Challenge Fixed by Fanatec - 2026 Season 4"
+        }
+      ]
     },
     {
-      "label": "IMSA Endurance",
-      "open": "IMSA Endurance Series - 2026 Season 4"
-    },
-    {
-      "label": "Global Endurance Tour",
-      "open": "Global Endurance Tour - 2026 Season 4"
-    },
-    {
-      "label": "GT Sprint",
-      "open": "GT Sprint Series by Simucube - 2026 Season 4",
-      "fixed": "GT3 Challenge Fixed by Fanatec - 2026 Season 4"
+      "title": "⏱️ Endurance",
+      "color": "#F5A623",
+      "rows": [
+        {
+          "label": "IMSA Endurance",
+          "open": "IMSA Endurance Series - 2026 Season 4"
+        },
+        {
+          "label": "Global Endurance Tour",
+          "open": "Global Endurance Tour - 2026 Season 4"
+        }
+      ]
     }
   ],
   "overrides": {

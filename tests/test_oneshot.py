@@ -49,14 +49,14 @@ def test_edit_message_with_reactions_and_old_image(tmp_path, monkeypatch):
     assert len(state["patches"]) == 1 and not state["posts"]
     patch = state["patches"][0]
     assert patch["attachments"] == []  # old image removed
-    assert len(patch["embeds"][0]["fields"]) % 3 == 0
+    assert patch["content"].startswith("## ") and len(patch["embeds"]) == 2
 
 
 def test_unchanged_board_is_not_edited(tmp_path, monkeypatch):
     state = {"message": {}, "patches": [], "posts": []}
     asyncio.run(_run(state, None, tmp_path, monkeypatch))  # first run posts
-    posted = state["posts"][0]["embeds"][0]
-    state["message"] = {"id": "42", "embeds": [posted], "attachments": [],
+    posted = state["posts"][0]
+    state["message"] = {"id": "42", "content": posted["content"], "embeds": posted["embeds"], "attachments": [],
                         "reactions": [{"emoji": {"name": "👍"}, "count": 2}]}
     asyncio.run(_run(state, "42", tmp_path, monkeypatch))
     assert state["patches"] == []

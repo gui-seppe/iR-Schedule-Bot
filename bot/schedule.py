@@ -134,6 +134,20 @@ def build_board(config: dict, data: dict, now: datetime) -> list[Row]:
     return rows
 
 
+@dataclass
+class Section:
+    title: str
+    color: str | int | None
+    rows: list[Row]
+
+
+def build_sections(config: dict, data: dict, now: datetime) -> list[Section]:
+    """Config either has "sections" (each with title/color/rows) or a flat "rows" list."""
+    secs = config.get("sections") or [{"title": config.get("title", "Tracked series"), "rows": config["rows"]}]
+    return [Section(s.get("title", ""), s.get("color"), build_board({**config, "rows": s["rows"]}, data, now))
+            for s in secs]
+
+
 def next_change(rows: list[Row], now: datetime) -> datetime | None:
     """When the board should be refreshed next: the earliest race start or week rollover."""
     times = []

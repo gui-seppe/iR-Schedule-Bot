@@ -54,6 +54,18 @@ python -m bot.main                         # the bot
 python -m pytest                           # tests
 ```
 
+## Sections
+
+Instead of a flat `rows` list, `config.json` can group rows into sections. Each becomes its own embed
+with its own color (up to 6 rows per section):
+
+```json
+"sections": [
+  {"title": "⚡ Sprint", "color": "#E03C31", "rows": [ ... ]},
+  {"title": "⏱️ Endurance", "color": "#F5A623", "rows": [ ... ]}
+]
+```
+
 ## Overrides
 
 Race times come from the "Races every…" line of each series. To set or fix them by hand:

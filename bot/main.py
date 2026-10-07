@@ -15,9 +15,9 @@ from pathlib import Path
 import discord
 from dotenv import load_dotenv
 
-from .message import board_embed, content_key
+from .message import board_embeds, content_key, heading
 from .render import render_board
-from .schedule import build_board, load_json, next_change
+from .schedule import build_sections, load_json, next_change
 
 log = logging.getLogger("schedule-bot")
 
@@ -63,16 +63,18 @@ class ScheduleBot(discord.Client):
         config = load_json(CONFIG_PATH)
         data = load_json(config.get("schedule_file", "data/schedule.json"))
         now = datetime.now(timezone.utc)
-        rows = build_board(config, data, now)
+        sections = build_sections(config, data, now)
+        rows = [r for sec in sections for r in sec.rows]
 
         title = config.get("title", "Tracked series")
         use_image = bool(config.get("image"))
-        embed_dict = board_embed(rows, title, "schedule.png" if use_image else None)
+        embeds = board_embeds(sections, "schedule.png" if use_image else None)
+        content = heading(config)
         # Countdowns tick client-side; only edit when the content actually changes.
-        signature = content_key(embed_dict)
+        signature = content_key(content, embeds)
         if signature != self.last_signature:
             png = render_board(rows, title) if use_image else None
-            await self.publish(discord.Embed.from_dict(embed_dict), png)
+            await self.publish(content, [discord.Embed.from_dict(e) for e in embeds], png)
             self.last_signature = signature
 
         wake = next_change(rows, now)
@@ -81,7 +83,7 @@ class ScheduleBot(discord.Client):
         log.info("next refresh in %.0fs", delay)
         return delay
 
-    async def publish(self, embed: discord.Embed, png: bytes | None) -> None:
+    async def publish(self, content: str, embeds: list[discord.Embed], png: bytes | None) -> None:
         channel = await self.fetch_channel(self.channel_id)
         files = [discord.File(io.BytesIO(png), filename="schedule.png")] if png else []
 
@@ -89,12 +91,12 @@ class ScheduleBot(discord.Client):
         if msg_id:
             try:
                 msg = await channel.fetch_message(msg_id)
-                await msg.edit(embed=embed, attachments=files)
+                await msg.edit(content=content, embeds=embeds, attachments=files)
                 log.info("edited message %s", msg_id)
                 return
             except discord.NotFound:
                 log.warning("message %s gone, posting a new one", msg_id)
-        msg = await channel.send(embed=embed, files=files)
+        msg = await channel.send(content=content, embeds=embeds, files=files)
         self.state = {"channel_id": self.channel_id, "message_id": msg.id}
         _save_state(self.state)
         log.info("posted message %s", msg.id)

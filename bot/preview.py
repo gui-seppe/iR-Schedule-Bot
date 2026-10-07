@@ -10,7 +10,7 @@ from pathlib import Path
 
 from .message import describe
 from .render import render_board
-from .schedule import build_board, load_json
+from .schedule import build_sections, load_json
 
 
 def main() -> None:
@@ -25,10 +25,11 @@ def main() -> None:
            else datetime.now(timezone.utc))
     config = load_json(args.config)
     data = load_json(config.get("schedule_file", "data/schedule.json"))
-    rows = build_board(config, data, now)
+    sections = build_sections(config, data, now)
+    rows = [r for sec in sections for r in sec.rows]
 
     Path(args.out).write_bytes(render_board(rows, config.get("title", "Tracked series")))
-    print(describe(rows))
+    print(describe(sections))
     for row in rows:
         for kind, side in (("open", row.open), ("fixed", row.fixed)):
             if side:

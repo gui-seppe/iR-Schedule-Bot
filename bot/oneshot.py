@@ -16,9 +16,9 @@ from datetime import datetime, timezone
 
 import aiohttp
 
-from .message import board_embed, content_key, static_signature
+from .message import board_embeds, content_key, heading, static_signature
 from .render import render_board
-from .schedule import build_board, load_json
+from .schedule import build_sections, load_json
 
 
 class DiscordError(Exception):
@@ -48,12 +48,14 @@ async def _call(session: aiohttp.ClientSession, method: str, url: str, payload: 
 async def run(webhook_url: str, msg_id: str | None) -> None:
     config = load_json(os.getenv("CONFIG_PATH", "config.json"))
     data = load_json(config.get("schedule_file", "data/schedule.json"))
-    rows = build_board(config, data, datetime.now(timezone.utc))
+    sections = build_sections(config, data, datetime.now(timezone.utc))
+    rows = [r for sec in sections for r in sec.rows]
     title = config.get("title", "Tracked series")
     # Optional table image. Its file name carries a hash of its content, so the next run can tell whether
     # it is still current without keeping any state of its own.
     image_name = f"schedule-{static_signature(rows)}.png" if config.get("image") else None
-    embed = board_embed(rows, title, image_name)
+    payload = {"content": heading(config), "embeds": board_embeds(sections, image_name)}
+    key = content_key(payload["content"], payload["embeds"])
 
     def image() -> tuple[str, bytes] | None:
         return (image_name, render_board(rows, title)) if image_name else None
@@ -65,21 +67,20 @@ async def run(webhook_url: str, msg_id: str | None) -> None:
             if not msg:
                 print(f"Message {msg_id} not found, posting a new one")
             else:
-                current = (msg.get("embeds") or [{}])[0]
                 have = [a["filename"] for a in msg.get("attachments", [])]
                 same_image = have == ([image_name] if image_name else [])
-                if same_image and content_key(current) == content_key(embed):
+                if same_image and content_key(msg.get("content"), msg.get("embeds") or []) == key:
                     print("Board unchanged, nothing to do")
                     return
                 if same_image:
-                    await _call(session, "PATCH", msg_url, {"embeds": [embed]})
+                    await _call(session, "PATCH", msg_url, payload)
                 else:
                     # Replacing the attachment list also drops an old image when the image is turned off.
-                    await _call(session, "PATCH", msg_url, {"embeds": [embed], "attachments": []}, image())
+                    await _call(session, "PATCH", msg_url, {**payload, "attachments": []}, image())
                 print(f"Updated message {msg_id}")
                 return
 
-        msg = await _call(session, "POST", f"{webhook_url}?wait=true", {"embeds": [embed]}, image())
+        msg = await _call(session, "POST", f"{webhook_url}?wait=true", payload, image())
         note = f"Posted new message {msg['id']}. Save it as the MESSAGE_ID repository variable."
         print(f"::notice::{note}" if os.getenv("GITHUB_ACTIONS") else note)
         if summary := os.getenv("GITHUB_STEP_SUMMARY"):
