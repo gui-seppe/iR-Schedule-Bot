@@ -1,0 +1,36 @@
+{
+  "title": "Tracked Series",
+  "schedule_file": "data/schedule.json",
+  "rows": [
+    {
+      "label": "Super Late Model",
+      "open": "Super Late Model Series - 2026 Season 4",
+      "fixed": "Super Late Model Series - 2026 Season 4 - Fixed"
+    },
+    {
+      "label": "Porsche Cup",
+      "open": "iRacing Porsche Cup by CONSPIT - 2026 Season 4",
+      "fixed": "iRacing Porsche Cup - Fixed by CONSPIT - 2026 Season 4"
+    },
+    {
+      "label": "IMSA",
+      "open": "IMSA iRacing Series by GO Fast - 2026 Season 4",
+      "fixed": "IMSA iRacing Series - Fixed by GO Fast - 2026 Season 4"
+    },
+    {
+      "label": "Formula A",
+      "open": "Formula A - Cosworth Cup Grand Prix - 2026 Season 4",
+      "fixed": "Formula A - Cosworth Cup Grand Prix - Fixed - 2026 Season 4"
+    },
+    {
+      "label": "GT Endurance",
+      "open": "GT Endurance Series by Simucube - 2026 Season 4"
+    }
+  ],
+  "overrides": {
+    "Super Late Model Tour - 2026 Season Fixed": {
+      "kind": "weekly",
+      "slots": [["Sat", "18:00"], ["Sun", "01:00"]]
+    }
+  }
+}
