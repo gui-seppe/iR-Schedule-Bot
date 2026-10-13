@@ -66,6 +66,18 @@ with its own color (up to 6 rows per section):
 ]
 ```
 
+## Special events (automatic)
+
+Special events aren't in the season PDF. `scripts/update_special_events.py` reads them from iracing.com:
+the [special events calendar](https://www.iracing.com/specialevents/) gives name, dates and car classes, and the
+"THIS WEEK: iRacing … | Special Event" post that iRacing publishes on the Monday of race week gives the track
+and every timeslot. The *Refresh special events* workflow runs it every 3 hours and commits
+`data/special_events.json`.
+
+A section with `"auto_special_events": true` lists this week's and next week's events with all timeslots
+(past ones struck through). Events whose post isn't out yet show their dates only.
+Series whose season is over are hidden from the board (set `"hide_finished": false` to keep them).
+
 ## Overrides
 
 Race times come from the "Races every…" line of each series. To set or fix them by hand:

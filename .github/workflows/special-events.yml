@@ -1,0 +1,35 @@
+name: Refresh special events
+
+on:
+  schedule:
+    - cron: "23 */3 * * *"  # every 3 hours; iRacing posts race-week timeslots on Mondays
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: special-events
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python scripts/update_special_events.py
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- data/special_events.json; then
+            echo "No changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/special_events.json
+          git commit -m "Update special events"
+          git push

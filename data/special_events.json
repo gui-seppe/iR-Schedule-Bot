@@ -1,0 +1,104 @@
+{
+  "fetched": "2026-10-13T10:57:06+00:00",
+  "events": [
+    {
+      "name": "8 Hours of Indianapolis",
+      "start": "2026-10-16",
+      "end": "2026-10-18",
+      "tag": "Team Event",
+      "track": "Indianapolis Motor Speedway – Road Course",
+      "classes": [
+        "GT3"
+      ],
+      "title": "iRacing Indy 8 Hour presented by PC’s by THOMAS",
+      "url": "https://www.iracing.com/this-week-iracing-indy-8-hour-presented-by-pcs-by-thomas-special-event/",
+      "sessions": [
+        "2026-10-16T22:00:00+00:00",
+        "2026-10-17T07:00:00+00:00",
+        "2026-10-17T12:00:00+00:00",
+        "2026-10-17T16:00:00+00:00",
+        "2026-10-18T00:00:00+00:00"
+      ]
+    },
+    {
+      "name": "iRacing FF1600 Festival",
+      "start": "2026-10-30",
+      "end": "2026-10-31",
+      "tag": null,
+      "track": null,
+      "classes": [
+        "Ray FF1600"
+      ]
+    },
+    {
+      "name": "Homestead Championship",
+      "start": "2026-11-04",
+      "end": "2026-11-09",
+      "tag": "Nascar Iracing Series",
+      "track": null,
+      "classes": [
+        "NASCAR Cup Series"
+      ]
+    },
+    {
+      "name": "SFL Mountain Showdown",
+      "start": "2026-11-13",
+      "end": "2026-11-15",
+      "tag": null,
+      "track": null,
+      "classes": [
+        "Super Formula Lights"
+      ]
+    },
+    {
+      "name": "SCCA Runoffs",
+      "start": "2026-11-17",
+      "end": "2026-11-21",
+      "tag": "Super Session",
+      "track": null,
+      "classes": [
+        "6 Classes"
+      ]
+    },
+    {
+      "name": "992 Endurance Cup",
+      "start": "2026-11-27",
+      "end": "2026-11-29",
+      "tag": "Team Event",
+      "track": null,
+      "classes": [
+        "Porsche Cup 992.2"
+      ]
+    },
+    {
+      "name": "Winter Derby",
+      "start": "2026-12-02",
+      "end": "2026-12-07",
+      "tag": null,
+      "track": null,
+      "classes": [
+        "Super Late Model"
+      ]
+    },
+    {
+      "name": "Chili Bowl",
+      "start": "2026-12-15",
+      "end": "2026-12-20",
+      "tag": "Super Session",
+      "track": null,
+      "classes": [
+        "Dirt Midget"
+      ]
+    },
+    {
+      "name": "THE Production Car Challenge @ViR",
+      "start": "2026-12-18",
+      "end": "2026-12-19",
+      "tag": null,
+      "track": null,
+      "classes": [
+        "Production Car Challenge Cars"
+      ]
+    }
+  ]
+}

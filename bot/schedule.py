@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -141,13 +141,36 @@ class Section:
     title: str
     color: str | int | None
     rows: list[Row]
+    events: list[dict] = field(default_factory=list)  # auto special events (from iracing.com)
+    now: datetime | None = None
+
+
+def _season_over(row: Row) -> bool:
+    """All of the row's series have race times but no more races left."""
+    return bool(row.sides) and all(s.next is None and s.series.recurrence for s in row.sides)
 
 
 def build_sections(config: dict, data: dict, now: datetime) -> list[Section]:
-    """Config either has "sections" (each with title/color/rows) or a flat "rows" list."""
+    """Config either has "sections" (each with title/color/rows) or a flat "rows" list.
+
+    A section with "auto_special_events": true also lists this week's and next week's special events
+    from the file written by scripts/update_special_events.py.
+    """
+    from .special_events import upcoming
+
     secs = config.get("sections") or [{"title": config.get("title", "Tracked series"), "rows": config["rows"]}]
-    return [Section(s.get("title", ""), s.get("color"), build_board({**config, "rows": s["rows"]}, data, now))
-            for s in secs]
+    out = []
+    for s in secs:
+        events = []
+        if s.get("auto_special_events"):
+            path = Path(config.get("special_events_file", "data/special_events.json"))
+            if path.exists():
+                events = upcoming(load_json(path), now)
+        rows = build_board({**config, "rows": s.get("rows", [])}, data, now)
+        if config.get("hide_finished", True):
+            rows = [r for r in rows if not _season_over(r)]
+        out.append(Section(s.get("title", ""), s.get("color"), rows, events, now))
+    return out
 
 
 def next_change(rows: list[Row], now: datetime) -> datetime | None:

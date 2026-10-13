@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from .schedule import Row, Section, Side
 
@@ -61,6 +61,42 @@ def section_fields(rows: list[Row]) -> list[dict]:
     return fields
 
 
+def _date_range(start: str, end: str) -> str:
+    a, b = date.fromisoformat(start), date.fromisoformat(end)
+    if a == b:
+        return f"{a:%b} {a.day}"
+    if a.month == b.month:
+        return f"{a:%b} {a.day}–{b.day}"
+    return f"{a:%b} {a.day} – {b:%b} {b.day}"
+
+
+def event_field(ev: dict, now: datetime) -> dict:
+    """One full-width field per special event, listing every timeslot (past ones struck through)."""
+    lines = []
+    if ev.get("track"):
+        lines.append(f"🏁 {ev['track']}")
+    meta = [m for m in (ev.get("tag"), " / ".join(ev.get("classes", [])), _date_range(ev["start"], ev["end"])) if m]
+    if ev.get("url"):
+        meta.append(f"[info]({ev['url']})")
+    lines.append("-# " + " · ".join(meta))
+
+    sessions = [datetime.fromisoformat(s) for s in ev.get("sessions", [])]
+    if sessions:
+        next_found = False
+        for t in sessions:
+            ts = int(t.timestamp())
+            if t <= now:
+                lines.append(f"~~<t:{ts}:F>~~")
+            elif not next_found:
+                lines.append(f"**<t:{ts}:F>** · <t:{ts}:R>")
+                next_found = True
+            else:
+                lines.append(f"<t:{ts}:F>")
+    else:
+        lines.append("-# 🕒 Timeslots are published by iRacing on the Monday of race week")
+    return {"name": f"🏆 {ev['name']}"[:256], "value": "\n".join(lines)[:1024], "inline": False}
+
+
 def _color(value) -> int:
     if isinstance(value, str):
         return int(value.lstrip("#"), 16)
@@ -71,7 +107,13 @@ def board_embeds(sections: list[Section], image_name: str | None = None) -> list
     """One embed dict per section (discord.Embed.from_dict turns each into an Embed)."""
     embeds = []
     for sec in sections:
-        embed = {"title": sec.title, "color": _color(sec.color), "fields": section_fields(sec.rows)}
+        fields = section_fields(sec.rows)
+        now = sec.now or datetime.now(timezone.utc)
+        room = 25 - len(fields)
+        fields += [event_field(ev, now) for ev in sec.events[:room]]
+        if not fields:
+            fields = [{"name": "​", "value": "-# Nothing scheduled this week or next", "inline": False}]
+        embed = {"title": sec.title, "color": _color(sec.color), "fields": fields}
         if len(sec.rows) > MAX_ROWS:
             embed["description"] = f"-# Showing the first {MAX_ROWS} of {len(sec.rows)} series"
         embeds.append(embed)
@@ -104,7 +146,8 @@ def describe(sections: list[Section]) -> str:
     lines = []
     for sec in sections:
         lines.append(f"== {sec.title} ==")
-        for f in section_fields(sec.rows):
+        now = sec.now or datetime.now(timezone.utc)
+        for f in section_fields(sec.rows) + [event_field(ev, now) for ev in sec.events]:
             if f is not EMPTY:
                 lines.append(f"[{f['name']}] " + f["value"].replace("\n", " / "))
     return "\n".join(lines)

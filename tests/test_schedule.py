@@ -110,3 +110,13 @@ def test_weekly_series_skip_off_weeks():
 def test_find_series_ambiguous():
     with pytest.raises(ConfigError, match="ambiguous"):
         find_series(DATA, "Super Late Model Series")
+
+
+def test_finished_series_are_hidden():
+    from bot.schedule import build_sections
+
+    later = dt(2026, 11, 1)  # every series in DATA has run its last race by then
+    (sec,) = build_sections(CONFIG, DATA, later)
+    assert sec.rows == []
+    (sec,) = build_sections({**CONFIG, "hide_finished": False}, DATA, later)
+    assert len(sec.rows) == 3
