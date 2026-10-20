@@ -1,25 +1,6 @@
 {
-  "fetched": "2026-10-19T20:38:09+00:00",
+  "fetched": "2026-10-20T00:26:38+00:00",
   "events": [
-    {
-      "name": "8 Hours of Indianapolis",
-      "start": "2026-10-16",
-      "end": "2026-10-18",
-      "tag": "Team Event",
-      "track": "Indianapolis Motor Speedway – Road Course",
-      "classes": [
-        "GT3"
-      ],
-      "title": "iRacing Indy 8 Hour presented by PC’s by THOMAS",
-      "url": "https://www.iracing.com/this-week-iracing-indy-8-hour-presented-by-pcs-by-thomas-special-event/",
-      "sessions": [
-        "2026-10-16T22:00:00+00:00",
-        "2026-10-17T07:00:00+00:00",
-        "2026-10-17T12:00:00+00:00",
-        "2026-10-17T16:00:00+00:00",
-        "2026-10-18T00:00:00+00:00"
-      ]
-    },
     {
       "name": "iRacing FF1600 Festival",
       "start": "2026-10-30",
