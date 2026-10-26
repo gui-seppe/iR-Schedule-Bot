@@ -1,14 +1,23 @@
 {
-  "fetched": "2026-10-20T00:26:38+00:00",
+  "fetched": "2026-10-26T13:18:09+00:00",
   "events": [
     {
       "name": "iRacing FF1600 Festival",
       "start": "2026-10-30",
       "end": "2026-10-31",
       "tag": null,
-      "track": null,
+      "track": "Brands Hatch Circuit – Indy",
       "classes": [
         "Ray FF1600"
+      ],
+      "title": "iRacing FF1600 Festival Presented by CONSPIT",
+      "url": "https://www.iracing.com/this-week-iracing-ff1600-festival-presented-by-conspit-special-event/",
+      "sessions": [
+        "2026-10-30T22:00:00+00:00",
+        "2026-10-31T07:00:00+00:00",
+        "2026-10-31T12:00:00+00:00",
+        "2026-10-31T16:00:00+00:00",
+        "2026-11-01T00:00:00+00:00"
       ]
     },
     {
