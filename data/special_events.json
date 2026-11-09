@@ -1,5 +1,5 @@
 {
-  "fetched": "2026-11-04T19:53:24+00:00",
+  "fetched": "2026-11-09T22:30:10+00:00",
   "events": [
     {
       "name": "Homestead Championship",
@@ -29,9 +29,18 @@
       "start": "2026-11-13",
       "end": "2026-11-15",
       "tag": null,
-      "track": null,
+      "track": "Mount Panorama Circuit",
       "classes": [
         "Super Formula Lights"
+      ],
+      "title": "iRacing Mountain Showdown",
+      "url": "https://www.iracing.com/this-week-iracing-mountain-showdown-special-event/",
+      "sessions": [
+        "2026-11-13T22:00:00+00:00",
+        "2026-11-14T07:00:00+00:00",
+        "2026-11-14T12:00:00+00:00",
+        "2026-11-14T16:00:00+00:00",
+        "2026-11-15T00:00:00+00:00"
       ]
     },
     {
@@ -39,9 +48,18 @@
       "start": "2026-11-17",
       "end": "2026-11-21",
       "tag": "Super Session",
-      "track": null,
+      "track": "Mount Panorama Circuit",
       "classes": [
         "USF 2000 // GT4 // Spec Ford // MX-5 // Clio Cup // Formula Vee"
+      ],
+      "title": "iRacing Mountain Showdown",
+      "url": "https://www.iracing.com/this-week-iracing-mountain-showdown-special-event/",
+      "sessions": [
+        "2026-11-20T22:00:00+00:00",
+        "2026-11-21T07:00:00+00:00",
+        "2026-11-21T12:00:00+00:00",
+        "2026-11-21T16:00:00+00:00",
+        "2026-11-22T00:00:00+00:00"
       ]
     },
     {
