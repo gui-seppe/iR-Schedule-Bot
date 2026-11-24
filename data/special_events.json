@@ -1,14 +1,22 @@
 {
-  "fetched": "2026-11-23T01:50:05+00:00",
+  "fetched": "2026-11-24T02:20:18+00:00",
   "events": [
     {
       "name": "992 Endurance Cup",
       "start": "2026-11-27",
       "end": "2026-11-29",
       "tag": "Team Event",
-      "track": null,
+      "track": "Circuit De Spa-Francorchamps",
       "classes": [
         "Porsche Cup 992.2"
+      ],
+      "title": "iRacing Creventic 992 Endurance Cup",
+      "url": "https://www.iracing.com/this-week-iracing-creventic-992-endurance-cup-special-event/",
+      "sessions": [
+        "2026-11-27T22:00:00+00:00",
+        "2026-11-28T07:00:00+00:00",
+        "2026-11-28T12:00:00+00:00",
+        "2026-11-28T16:00:00+00:00"
       ]
     },
     {
